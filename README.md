@@ -3,6 +3,8 @@
 
 A full‑stack financial advisor platform with portfolio management, monthly budgets, and retirement planning. Backend runs on Node/Express with JWT auth; data is stored in Supabase via `@supabase/supabase-js`. Frontend runs on Vite/React.
 
+Website : finflowad.netlify.app
+
 ## Features
 
 - Authentication: register, login, profile update
