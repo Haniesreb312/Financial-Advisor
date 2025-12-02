@@ -1,0 +1,135 @@
+// This is your Prisma schema file
+// Learn more: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String   @id @default(uuid())
+  name          String
+  email         String   @unique
+  password      String
+  phone         String?
+  address       String?
+  dateOfBirth   DateTime?
+  occupation    String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relations
+  portfolios    Portfolio[]
+  budgets       Budget[]
+  retirementPlans RetirementPlan[]
+  investments   Investment[]
+  savingsGoals  SavingsGoal[]
+  activities    Activity[]
+
+  @@map("users")
+}
+
+model Portfolio {
+  id            String   @id @default(uuid())
+  userId        String
+  stocks        Float    @default(0)
+  bonds         Float    @default(0)
+  realEstate    Float    @default(0)
+  cash          Float    @default(0)
+  totalInvested Float    @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("portfolios")
+}
+
+model Budget {
+  id              String   @id @default(uuid())
+  userId          String
+  monthlyIncome   Float
+  housing         Float    @default(0)
+  utilities       Float    @default(0)
+  food            Float    @default(0)
+  transportation  Float    @default(0)
+  insurance       Float    @default(0)
+  entertainment   Float    @default(0)
+  other           Float    @default(0)
+  month           Int
+  year            Int
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, month, year])
+  @@map("budgets")
+}
+
+model RetirementPlan {
+  id                    String   @id @default(uuid())
+  userId                String
+  currentAge            Int
+  retirementAge         Int
+  currentSavings        Float
+  monthlyContribution   Float
+  expectedReturn        Float
+  retirementGoal        Float
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("retirement_plans")
+}
+
+model Investment {
+  id                  String   @id @default(uuid())
+  userId              String
+  name                String
+  initialInvestment   Float
+  monthlyContribution Float
+  years               Int
+  returnRate          Float
+  category            String?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("investments")
+}
+
+model SavingsGoal {
+  id              String   @id @default(uuid())
+  userId          String
+  goalName        String
+  targetAmount    Float
+  currentAmount   Float    @default(0)
+  monthlySavings  Float
+  years           Int
+  interestRate    Float
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("savings_goals")
+}
+
+model Activity {
+  id          String   @id @default(uuid())
+  userId      String
+  type        String
+  description String
+  timestamp   DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("activities")
+}
